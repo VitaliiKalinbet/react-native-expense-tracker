@@ -11,6 +11,8 @@ export default function ManageExpense({ route, navigation }) {
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
 
+  const selectedExpense = expensesContext.expenses.find((expense) => expense.id === editedExpenseId);
+
   function deleteExpenseHandler() {
     expensesContext.deleteExpense(editedExpenseId);
     navigation.goBack();
@@ -38,7 +40,12 @@ export default function ManageExpense({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <ExpenseForm onCancel={cancelHandler} onSubmit={confirmHandler} submitButtonLabel={isEditing ? 'Update' : 'Add'} />
+      <ExpenseForm
+        onCancel={cancelHandler}
+        onSubmit={confirmHandler}
+        submitButtonLabel={isEditing ? 'Update' : 'Add'}
+        defaultValues={isEditing ? selectedExpense : undefined}
+      />
       
       {isEditing && <View style={styles.deleteContainer}>
          <IconButton
