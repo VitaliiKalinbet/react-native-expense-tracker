@@ -3,13 +3,17 @@ import { useLayoutEffect } from 'react';
 import IconButton from '../components/ui/IconButton';
 import Button from '../components/ui/Button';
 import { GlobalStyles } from '../constants/styles';
+import { ExpensesContext } from '../store/expenses-context';
+import { useContext } from 'react';
 
 export default function ManageExpense({ route, navigation }) {
+  const expensesContext = useContext(ExpensesContext);
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
 
   function deleteExpenseHandler() {
-    console.log('deleteExpenseHandler');
+    expensesContext.deleteExpense(editedExpenseId);
+    navigation.goBack();
   }
 
   function cancelHandler() {
@@ -17,7 +21,21 @@ export default function ManageExpense({ route, navigation }) {
   }
 
   function confirmHandler() {
-    console.log('saveExpenseHandler');
+    if (isEditing) {
+      expensesContext.updateExpense(editedExpenseId, {
+        description: 'test',
+        amount: 100,
+        date: new Date('2026-01-10'),
+      });
+    } else {
+      expensesContext.addExpense({
+        description: 'test',
+        amount: 100,
+        date: new Date('2026-01-10'),
+      });
+    }
+    
+    navigation.goBack();
   }
 
   useLayoutEffect(() => {
