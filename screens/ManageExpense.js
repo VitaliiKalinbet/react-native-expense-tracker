@@ -1,13 +1,15 @@
 import { View, StyleSheet } from 'react-native';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import IconButton from '../components/ui/IconButton';
 import { GlobalStyles } from '../constants/styles';
 import { ExpensesContext } from '../store/expenses-context';
 import { useContext } from 'react';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import { storeExpense, updateExpense, deleteExpense } from '../util/http';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 export default function ManageExpense({ route, navigation }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const expensesContext = useContext(ExpensesContext);
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
@@ -15,7 +17,9 @@ export default function ManageExpense({ route, navigation }) {
   const selectedExpense = expensesContext.expenses.find((expense) => expense.id === editedExpenseId);
 
   async function deleteExpenseHandler() {
+    setIsSubmitting(true);
     await deleteExpense(editedExpenseId);
+    setIsSubmitting(false);
     expensesContext.deleteExpense(editedExpenseId);
     navigation.goBack();
   }
@@ -25,6 +29,7 @@ export default function ManageExpense({ route, navigation }) {
   }
 
   async function confirmHandler(expenseData) {
+    setIsSubmitting(true);
     if (isEditing) {
       expensesContext.updateExpense(editedExpenseId, expenseData);
       await updateExpense(editedExpenseId, expenseData);
@@ -32,6 +37,7 @@ export default function ManageExpense({ route, navigation }) {
       const id = await storeExpense(expenseData);
       expensesContext.addExpense({ ...expenseData, id });
     }
+    setIsSubmitting(false);
     navigation.goBack();
   }
 
@@ -40,6 +46,10 @@ export default function ManageExpense({ route, navigation }) {
       title: isEditing ? 'Edit Expense' : 'Add Expense',  
     });
   }, [navigation, isEditing]);
+
+  if (isSubmitting) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <View style={styles.container}>
