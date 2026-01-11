@@ -5,7 +5,7 @@ import { GlobalStyles } from '../constants/styles';
 import { ExpensesContext } from '../store/expenses-context';
 import { useContext } from 'react';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
-import { storeExpense, updateExpense } from '../util/http';
+import { storeExpense, updateExpense, deleteExpense } from '../util/http';
 
 export default function ManageExpense({ route, navigation }) {
   const expensesContext = useContext(ExpensesContext);
@@ -14,7 +14,8 @@ export default function ManageExpense({ route, navigation }) {
 
   const selectedExpense = expensesContext.expenses.find((expense) => expense.id === editedExpenseId);
 
-  function deleteExpenseHandler() {
+  async function deleteExpenseHandler() {
+    await deleteExpense(editedExpenseId);
     expensesContext.deleteExpense(editedExpenseId);
     navigation.goBack();
   }
@@ -23,11 +24,13 @@ export default function ManageExpense({ route, navigation }) {
     navigation.goBack();
   }
 
-  function confirmHandler(expenseData) {
+  async function confirmHandler(expenseData) {
     if (isEditing) {
       expensesContext.updateExpense(editedExpenseId, expenseData);
+      await updateExpense(editedExpenseId, expenseData);
     } else {
-      storeExpense(expenseData);
+      const id = await storeExpense(expenseData);
+      expensesContext.addExpense({ ...expenseData, id });
     }
     navigation.goBack();
   }

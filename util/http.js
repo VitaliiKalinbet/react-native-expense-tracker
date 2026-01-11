@@ -4,7 +4,8 @@ const API_URL = 'https://expense-tracker-react-na-5a1fc-default-rtdb.firebaseio.
 
 export async function storeExpense(expenseData) {
   const response = await axios.post(`${API_URL}/expenses.json`, expenseData);
-  return response.data;
+  const id = response.data.name;
+  return id;
 }
 
 export async function fetchExpenses() {
@@ -29,3 +30,6 @@ export async function updateExpense(id, expenseData) {
   return response.data;
 }
 
+export function deleteExpense(id) {
+  return axios.delete(`${API_URL}/expenses/${id}.json`);
+}
