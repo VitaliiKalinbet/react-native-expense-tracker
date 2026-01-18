@@ -1,7 +1,6 @@
 import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, StyleSheet } from 'react-native';
-import { GlobalStyles } from '../../constants/styles';
 
 export default function IconButton({ icon, size, color, onPress, children = null }) {
   return (

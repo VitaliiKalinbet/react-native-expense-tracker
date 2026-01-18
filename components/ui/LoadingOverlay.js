@@ -1,9 +1,10 @@
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import { GlobalStyles } from '../../constants/styles';
 
-export default function LoadingOverlay() {
+export default function LoadingOverlay({ message }) {
   return (
     <View style={styles.container}>
+      {message && <Text style={styles.message}>{message}</Text>}
       <ActivityIndicator size="large" color='white' />
     </View>
   );
@@ -16,5 +17,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary700,
+  },
+  message: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });
