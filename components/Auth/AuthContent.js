@@ -24,7 +24,6 @@ function AuthContent({ isLogin, onAuthenticate }) {
   }
 
   function submitHandler(credentials) {
-    console.log('submitHandler credentials: ', credentials);
     let { email, confirmEmail, password, confirmPassword } = credentials;
 
     email = email.trim();
